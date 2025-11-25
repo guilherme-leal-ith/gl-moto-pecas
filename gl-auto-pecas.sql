@@ -1,3 +1,5 @@
+-- DDL
+
 CREATE DATABASE IF NOT EXISTS gl_moto_pecas
   DEFAULT CHARACTER SET utf8mb4
   DEFAULT COLLATE utf8mb4_unicode_ci;
