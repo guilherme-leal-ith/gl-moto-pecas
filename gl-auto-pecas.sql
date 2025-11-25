@@ -32,7 +32,7 @@ CREATE TABLE TB_PRODUTO (
     PK_codigoProduto    INT           NOT NULL AUTO_INCREMENT,
     nomeProduto         VARCHAR(100)  NOT NULL,
     categoria           VARCHAR(50),
-    garatiaProduto      VARCHAR(50),      -- grafia igual ao diagrama
+    garatiaProduto      VARCHAR(50),      
     marcaProduto        VARCHAR(50),
     precoProduto        DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (PK_codigoProduto)
