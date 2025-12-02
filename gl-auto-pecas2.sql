@@ -1,3 +1,6 @@
+-- deletar BD
+DROP DATABASE IF EXISTS gl_moto_pecas;
+
 --   DDL – CRIAÇÃO DO BANCO E DAS TABELAS
 
 CREATE DATABASE IF NOT EXISTS gl_moto_pecas
@@ -114,26 +117,6 @@ CREATE TABLE ESTOQUE (
     FOREIGN KEY (FK_codigoProduto) REFERENCES TB_PRODUTO (PK_codigoProduto),
     FOREIGN KEY (FK_codigoDeposito) REFERENCES TB_DEPOSITO (PK_codigoDeposito)
 ) ENGINE=InnoDB;
-
-/* RESETAR O BANCO
-
-DELETE FROM TB_ITEMVENDA;
-DELETE FROM TB_VENDA;
-DELETE FROM TB_PAGAMENTO;
-DELETE FROM TB_PRODUTO_FORNECEDOR;
-DELETE FROM ESTOQUE;
-DELETE FROM TB_DEPOSITO;
-DELETE FROM TB_PRODUTO;
-DELETE FROM TB_FORNECEDORES;
-DELETE FROM TB_FUNCIONARIO;
-DELETE FROM TB_CLIENTE;
-
-ALTER TABLE TB_PRODUTO AUTO_INCREMENT = 1;
-ALTER TABLE TB_PAGAMENTO AUTO_INCREMENT = 1;
-ALTER TABLE TB_DEPOSITO AUTO_INCREMENT = 1;
-ALTER TABLE TB_ITEMVENDA AUTO_INCREMENT = 1;
-ALTER TABLE TB_VENDA AUTO_INCREMENT = 1; */
-
 
 -- DML – INSERÇÃO DOS DADOS
 -- clientes
@@ -885,7 +868,13 @@ INSERT INTO TB_ITEMVENDA (FK_IdVenda,FK_codigoProduto,quantidade,valorUnitario) 
 -- criterio: WHERE por CPF
 UPDATE TB_CLIENTE
 SET telefone='21999990099'
-WHERE PK_cpfCliente='11111111111';
+WHERE PK_cpfCliente='00000000001';
+-- Conferir o telefone do cliente de CPF 00000000001
+SELECT PK_cpfCliente,
+       nomeCliente,
+       telefone
+FROM TB_CLIENTE
+WHERE PK_cpfCliente = '00000000001';
 
 -- ATUALIZAÇÃO 2
 -- criterio: só categoria Moto, com subconsulta
@@ -899,12 +888,31 @@ WHERE PK_codigoProduto IN (
         WHERE categoria = 'Moto'
     ) AS temp
 );
+-- Conferir os preços de todos os produtos da categoria 'Moto'
+SELECT PK_codigoProduto,
+       nomeProduto,
+       categoria,
+       precoProduto
+FROM TB_PRODUTO
+WHERE categoria = 'Moto'
+ORDER BY PK_codigoProduto
+LIMIT 10;
 
 -- ATUALIZAÇÃO 3
 -- criterio: por PK
 UPDATE TB_PAGAMENTO
 SET statusPagamento='Pago', jurosPagamento=0
 WHERE PK_codigoPagamento=2;
+-- Conferir o pagamento de código 2
+SELECT PK_codigoPagamento,
+       vencimentoPagamento,
+       statusPagamento,
+       tipoPagamento,
+       parcelasPagamento,
+       jurosPagamento,
+       valorPagamento
+FROM TB_PAGAMENTO
+WHERE PK_codigoPagamento = 2;
 
 -- ATUALIZAÇÃO ENVOLVENDO MAIS DE UMA TABELA
 UPDATE TB_PAGAMENTO pg
@@ -912,19 +920,55 @@ SET statusPagamento='Em cobrança'
 WHERE pg.PK_codigoPagamento IN (
   SELECT v.FK_codigoPagamento
   FROM TB_VENDA v
-  WHERE v.FK_cpfCliente='22222222222'
+  WHERE v.FK_cpfCliente='00000000022'
 );
+-- Conferir os pagamentos ligados ao cliente de CPF 00000000022
+SELECT pg.PK_codigoPagamento,
+       pg.statusPagamento,
+       pg.vencimentoPagamento,
+       pg.tipoPagamento,
+       pg.parcelasPagamento,
+       pg.jurosPagamento,
+       pg.valorPagamento
+FROM TB_PAGAMENTO pg
+JOIN TB_VENDA v
+  ON v.FK_codigoPagamento = pg.PK_codigoPagamento
+WHERE v.FK_cpfCliente = '00000000022';
 
 -- REMOÇÃO 1
 -- criterio: uso de FK com critério bem definido, sendo: venda 3, produto 3
 DELETE FROM TB_ITEMVENDA
-WHERE FK_IdVenda=3 AND FK_codigoProduto=3;
+WHERE FK_IdVenda=3 AND FK_codigoProduto=5;
+-- Conferir os itens da venda 3 (o item do produto 5 deve ter sumido)
+SELECT PK_IdItemVenda,
+       FK_IdVenda,
+       FK_codigoProduto,
+       quantidade,
+       valorUnitario
+FROM TB_ITEMVENDA
+WHERE FK_IdVenda = 3;
+
+-- REMOÇÃO 2
+-- criterio: remover o vínculo entre o fornecedor 00000000000050 e o produto 24
+DELETE FROM TB_PRODUTO_FORNECEDOR
+WHERE FK_PK_CNPJ = '00000000000050'
+  AND FK_PK_codigoProduto = 24;
+-- Conferir os produtos ainda associados ao fornecedor 00000000000050
+SELECT FK_PK_CNPJ,
+       FK_PK_codigoProduto
+FROM TB_PRODUTO_FORNECEDOR
+WHERE FK_PK_CNPJ = '00000000000050';
 
 -- REMOÇÃO ENVOLVENDO MAIS DE UMA TABELA
 -- criterio: depende da tabela ESTOQUE (exclui se não tiver estoque para esse deposito)
 DELETE FROM TB_DEPOSITO
-WHERE PK_codigoDeposito=2
-AND NOT EXISTS (SELECT 1 FROM ESTOQUE e WHERE e.FK_codigoDeposito = 2);
+WHERE PK_codigoDeposito=28
+AND NOT EXISTS (SELECT 1 FROM ESTOQUE e WHERE e.FK_codigoDeposito = 28);
+-- Conferir se o depósito 28 ainda existe
+SELECT PK_codigoDeposito,
+       enderecoDeposito
+FROM TB_DEPOSITO
+WHERE PK_codigoDeposito = 28;
 
 
 --   DQL – CONSULTAS
@@ -941,10 +985,11 @@ ORDER BY v.dataVenda, v.PK_idVenda;
 SELECT p.nomeProduto, d.enderecoDeposito, e.Quantidade
 FROM ESTOQUE e
 JOIN TB_PRODUTO p ON e.FK_codigoProduto = p.PK_codigoProduto
-JOIN TB_DEPOSITO d ON e.FK_codigoDeposito = d.PK_codigoDeposito;
+JOIN TB_DEPOSITO d ON e.FK_codigoDeposito = d.PK_codigoDeposito
+LIMIT 10;
 
 -- CONSULTA 3 – cliente por CPF / consulta individual
-SELECT * FROM TB_CLIENTE WHERE PK_cpfCliente='11111111111';
+SELECT * FROM TB_CLIENTE WHERE PK_cpfCliente='00000000001';
 
 -- CONSULTA 4 – detalhes da venda 1 / consulta individual (itens de venda especifica)
 SELECT * FROM TB_ITEMVENDA WHERE FK_IdVenda=1;
@@ -953,9 +998,11 @@ SELECT * FROM TB_ITEMVENDA WHERE FK_IdVenda=1;
 SELECT f.razaoSocial, p.nomeProduto
 FROM TB_FORNECEDORES f
 JOIN TB_PRODUTO_FORNECEDOR pf ON pf.FK_PK_CNPJ=f.PK_CNPJ
-JOIN TB_PRODUTO p ON p.PK_codigoProduto=pf.FK_PK_codigoProduto;
+JOIN TB_PRODUTO p ON p.PK_codigoProduto=pf.FK_PK_codigoProduto
+LIMIT 10;
 
 -- CONSULTA 6 – vendas por funcionário
 SELECT f.nomeFuncionario, v.PK_idVenda, v.valorTotal
 FROM TB_FUNCIONARIO f
-JOIN TB_VENDA v ON v.FK_cpfFuncionario=f.PK_cpfFuncionario;
+JOIN TB_VENDA v ON v.FK_cpfFuncionario=f.PK_cpfFuncionario
+LIMIT 10;
