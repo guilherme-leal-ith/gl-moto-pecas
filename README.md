@@ -1,4 +1,4 @@
-# Projeto: Banco de Dados - Loja de Peças Automotivas
+# Projeto: Banco de Dados MySQL - Loja de Peças Automotivas
 
 Este projeto foi desenvolvido como parte da disciplina de **Modelagem de Dados**, com o objetivo de aplicar conceitos de modelagem relacional, criação de tabelas, relacionamentos e manipulação de dados utilizando SQL.
 
