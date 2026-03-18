@@ -20,7 +20,7 @@ A ideia agora é evoluir este projeto acadêmico para algo mais completo.
 
 Estamos iniciando a **refatoração do sistema** com o objetivo de transformá-lo em uma aplicação **fullstack**, utilizando:
 
-- **Frontend:** React  
+- **Frontend:** HTML5 + CSS3 + JavaScript
 - **Backend:** Java com Spring Boot  
 - **Banco de Dados:** MySQL  
 
