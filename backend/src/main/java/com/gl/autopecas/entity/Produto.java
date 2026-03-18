@@ -10,7 +10,7 @@ public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(length = 100, nullable = false)
     private String nome;
@@ -24,7 +24,7 @@ public class Produto {
     @Column(length = 50)
     private String marca;
 
-    @Column(precision = 10, scale = 2)
+    @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal preco;
 
     //precisa desse sem args pq o JPA exige, ja q ao fzr uma busca, o jpa instancia a entidade, mas sem saber
@@ -32,9 +32,9 @@ public class Produto {
     // de valor em valor via setters
     public Produto(){};
 
-    //esse é pro dev, ajuda a criar entidades no cod sem precisar chamar setter a setter
-    public Produto(int id, String nome, String categoria, String garantia, String marca, BigDecimal preco) {
-        this.id = id;
+    //esse é pro dev, ajuda a criar entidades no cod sem precisar chamar setter a getter
+    //sem int id pq é auto increment
+    public Produto(String nome, String categoria, String garantia, String marca, BigDecimal preco) {
         this.nome = nome;
         this.categoria = categoria;
         this.garantia = garantia;
