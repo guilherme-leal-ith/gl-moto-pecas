@@ -8,5 +8,28 @@
 </head>
 <body>
     <h1>Produtos</h1>
+    <h2>Cadastrar Produtos</h2>
+    <form id="formProduto">
+        <input type="text" placeholder="Nome" id="nome">
+        <input type="text" placeholder="Categoria" id="categoria">
+        <input type="text" placeholder="Marca" id="marca">
+        <input type="number" placeholder="Preço" id="preco">
+        <button type="submit">Adicionar</button>
+    </form>
+    <h2>Lista de Produtos</h2>
+    <table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Marca</th>
+            <th>Preço</th>
+        </tr>
+    </thead>
+    <tbody id="listaProdutos"></tbody>
+    <script src="../js/produtos.js"></script>
+</table>
+    
 </body>
 </html>
