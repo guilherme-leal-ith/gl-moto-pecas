@@ -1,0 +1,56 @@
+{
+   
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+body{
+    background-color: bisque;
+
+}
+
+.menu{
+   display: flex;
+   width: 100%;
+
+}
+.menub{
+    background-size: cover;
+   flex: 1;
+   padding: 20px;
+   height: 100vh;
+   margin-left: 15px;
+   position: relative;
+}
+.menub:hover{
+   opacity: 65%;
+}
+.box1{
+    background-image: url('../img/peças.jpg');
+}
+.box2{
+    background-image: url('../img/clientes.png');
+}
+.box3{
+    background-image: url('../img/vendas.jpg');
+}
+.textoSpam{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    color: black;
+    font-size: 25px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+    background: rgba(0, 0, 0, 0.5);
+    
+}
+.menub:hover .textoSpam{
+    opacity: 1;
+}
